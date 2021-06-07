@@ -10,5 +10,7 @@ import firebase from 'firebase';
   };
  
   const fire = firebase.initializeApp(firebaseConfig);
-
-  export default fire;
+  const db = firebase.database();
+  const storage= firebase.storage();
+ 
+export {fire,db,storage}; 

@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import React, {useState,useEffect} from 'react';
 import './App.css';
-import fire from './firebase.js';
+import {fire,db,storage} from './firebase.js';
 import Login from './components/login';
 import Hero from './hero';
 
@@ -39,15 +39,15 @@ const App = () => {
           setPasswordError(err.message);
           break;
       }
-
-    });
+      
+    })
   };
 
   const handleSignup = ()=>{
     clearErrors();
     fire
     .auth()
-    .signInWithEmailAndPassword(email,password)
+    .createUserWithEmailAndPassword(email,password)
     .catch((err) => {
       switch (err.code){
         case "auth/email-already-in-use":
@@ -68,6 +68,7 @@ const App = () => {
     fire.auth().signOut();
   };
 
+
   const authListener = () => {
     fire.auth().onAuthStateChanged(user => {
       if(user){
@@ -77,18 +78,22 @@ const App = () => {
       else{
         setUser("");
       }
-
     });
   };
+ 
 
   useEffect(() =>{
     authListener();
   }, []);
 
+
   return (
     <div className="App">
       {user ? 
-         (<Hero handleLogout={handleLogout}/>) 
+         (<Hero 
+          handleLogout={handleLogout} 
+          user={user}
+          />) 
          : 
          (
           <Login
